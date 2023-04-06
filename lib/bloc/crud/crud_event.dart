@@ -19,3 +19,5 @@ class UpdateData extends CrudEvent {
 }
 
 class DeleteData extends CrudEvent {}
+
+class GetData extends CrudEvent {}

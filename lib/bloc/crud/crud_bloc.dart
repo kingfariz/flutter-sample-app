@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:sample_project/helpers/functions/system_log.dart';
+import 'package:sample_project/models/user_model.dart';
 import '../../services/dio_setting.dart';
 part 'crud_event.dart';
 part 'crud_state.dart';
@@ -60,6 +61,19 @@ class CrudBloc extends Bloc<CrudEvent, CrudState> {
           emit(DeleteDataSuccess());
         } else {
           systemLog("Failed to delete data");
+        }
+      } catch (e) {
+        systemLog(e.toString());
+      }
+    });
+    on<GetData>((event, emit) async {
+      try {
+        Response response = await userGet('https://reqres.in/api/users/2');
+        if (response.statusCode == 200) {
+          systemLog(response.toString());
+          emit(GetDataSuccess(jsonDecode(response.toString())));
+        } else {
+          systemLog("Get data failed");
         }
       } catch (e) {
         systemLog(e.toString());

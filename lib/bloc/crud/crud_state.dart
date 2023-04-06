@@ -18,3 +18,9 @@ class SendDataSuccess extends CrudState {}
 class UpdateDataSuccess extends CrudState {}
 
 class DeleteDataSuccess extends CrudState {}
+
+class GetDataSuccess extends CrudState {
+  final Map<String, dynamic> data;
+  GetDataSuccess(this.data);
+  List<Object?> get props => [data];
+}

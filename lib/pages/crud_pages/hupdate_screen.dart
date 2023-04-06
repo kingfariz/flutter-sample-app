@@ -61,6 +61,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
               });
               showSnackbar("Update Data Success");
             }
+            if (state is GetDataSuccess) {
+              setState(() {
+                userModel = UserModel.fromJson(state.data);
+              });
+            }
             if (state is CrudError) {
               showSnackbar("Update Data Failed Please check your connection");
             }
@@ -129,7 +134,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
     return Container(
       height: 50,
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 30, bottom: 30),
+      margin: const EdgeInsets.only(top: 30),
       child: ElevatedButton(
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
@@ -208,15 +213,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   void getData() async {
-    response = await userGet('https://reqres.in/api/users/2');
-    if (response.statusCode == 200) {
-      systemLog(response.data["data"].toString());
-      setState(() {
-        userModel = UserModel.fromJson(jsonDecode(response.toString()));
-      });
-    } else {
-      systemLog("Failed to get data");
-    }
+    final CrudBloc crudBloc = BlocProvider.of<CrudBloc>(context);
+    crudBloc.add(GetData());
   }
 
   void updateData(String name, String job) async {
