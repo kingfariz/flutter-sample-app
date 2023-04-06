@@ -5,7 +5,7 @@ abstract class CrudState {}
 
 class CrudLoading extends CrudState {}
 
-class ReadDataError extends CrudState {}
+class CrudError extends CrudState {}
 
 class ReadDataSuccess extends CrudState {
   final List<dynamic> data;

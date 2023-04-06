@@ -55,7 +55,7 @@ class _ReadScreenState extends State<ReadScreen> {
                 top: defaultMargin, right: defaultMargin, left: defaultMargin),
             child: BlocBuilder<CrudBloc, CrudState>(
               builder: (context, state) {
-                if (state is ReadDataError) {
+                if (state is CrudError) {
                   systemLog("Bloc state: Error");
                 }
                 if (state is CrudLoading) {
