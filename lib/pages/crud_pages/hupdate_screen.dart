@@ -47,6 +47,20 @@ class _UpdateScreenState extends State<UpdateScreen> {
               });
               showSnackbar("Update Data Success");
             }
+            if (state is DeleteDataSuccess) {
+              setState(() {
+                jobCtrl.text = "";
+                nameCtrl.text = "";
+              });
+              showSnackbar("Delete Data Success");
+            }
+            if (state is UpdateDataSuccess) {
+              setState(() {
+                jobCtrl.text = "";
+                nameCtrl.text = "";
+              });
+              showSnackbar("Update Data Success");
+            }
             if (state is CrudError) {
               showSnackbar("Update Data Failed Please check your connection");
             }
@@ -211,18 +225,20 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   void deleteData() async {
-    response = await userDelete('https://reqres.in/api/users/2');
-    if (response.statusCode == 204) {
-      jobCtrl.text = "";
-      nameCtrl.text = "";
-      setState(() {});
-      Future.delayed(const Duration(milliseconds: 200));
-      systemLog("Mendapat response ${response.statusCode}");
-      showSnackbar("Berhasil Delete Data");
-    } else {
-      systemLog("gagal Delete data");
-      showSnackbar("Gagal Delete Data");
-    }
+    final CrudBloc crudBloc = BlocProvider.of<CrudBloc>(context);
+    crudBloc.add(DeleteData());
+    // response = await userDelete('https://reqres.in/api/users/2');
+    // if (response.statusCode == 204) {
+    //   jobCtrl.text = "";
+    //   nameCtrl.text = "";
+    //   setState(() {});
+    //   Future.delayed(const Duration(milliseconds: 200));
+    //   systemLog("Mendapat response ${response.statusCode}");
+    //   showSnackbar("Berhasil Delete Data");
+    // } else {
+    //   systemLog("gagal Delete data");
+    //   showSnackbar("Gagal Delete Data");
+    // }
   }
 
   void showSnackbar(String message) {

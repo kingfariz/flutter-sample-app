@@ -16,3 +16,5 @@ class ReadDataSuccess extends CrudState {
 class SendDataSuccess extends CrudState {}
 
 class UpdateDataSuccess extends CrudState {}
+
+class DeleteDataSuccess extends CrudState {}

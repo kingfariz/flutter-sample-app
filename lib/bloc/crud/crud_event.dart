@@ -17,3 +17,5 @@ class UpdateData extends CrudEvent {
   final Map<String, dynamic> postData;
   UpdateData({required this.postData});
 }
+
+class DeleteData extends CrudEvent {}

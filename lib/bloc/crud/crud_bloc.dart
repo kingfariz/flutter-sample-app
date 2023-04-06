@@ -52,5 +52,18 @@ class CrudBloc extends Bloc<CrudEvent, CrudState> {
         systemLog(e.toString());
       }
     });
+    on<DeleteData>((event, emit) async {
+      try {
+        Response response = await userDelete('https://reqres.in/api/users/2');
+        if (response.statusCode == 204) {
+          systemLog(response.toString());
+          emit(DeleteDataSuccess());
+        } else {
+          systemLog("Failed to delete data");
+        }
+      } catch (e) {
+        systemLog(e.toString());
+      }
+    });
   }
 }
