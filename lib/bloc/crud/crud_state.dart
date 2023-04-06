@@ -12,3 +12,5 @@ class ReadDataSuccess extends CrudState {
   ReadDataSuccess(this.data);
   List<Object?> get props => [data];
 }
+
+class SendDataSucces extends CrudState {}

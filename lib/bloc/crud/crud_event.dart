@@ -7,3 +7,8 @@ class ReadData extends CrudEvent {
   final String page;
   ReadData({required this.page});
 }
+
+class SendData extends CrudEvent {
+  final Map<String, dynamic> postData;
+  SendData({required this.postData});
+}
