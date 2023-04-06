@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import '../../helpers/system_log.dart';
+import '../../helpers/functions/system_log.dart';
 import '../../helpers/themes.dart';
 import '../../services/dio_setting.dart';
 

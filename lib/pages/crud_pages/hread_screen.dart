@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:sample_project/bloc/crud/crud_bloc.dart';
-import '../../helpers/system_log.dart';
+import '../../helpers/functions/system_log.dart';
 import '../../helpers/themes.dart';
 import '../../services/dio_setting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../helpers/system_log.dart';
+import '../helpers/functions/system_log.dart';
 
 final Dio dio = Dio(BaseOptions(
     // baseUrl: 'https://reqres.in/api/',

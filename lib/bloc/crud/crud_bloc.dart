@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
-import 'package:sample_project/helpers/system_log.dart';
+import 'package:sample_project/helpers/functions/system_log.dart';
 
 import '../../services/dio_setting.dart';
 

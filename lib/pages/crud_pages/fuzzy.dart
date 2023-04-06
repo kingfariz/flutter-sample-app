@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sample_project/helpers/system_log.dart';
+import 'package:sample_project/helpers/functions/system_log.dart';
 import '../../helpers/themes.dart';
 
 class FuzzyVariable {
