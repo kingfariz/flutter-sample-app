@@ -36,7 +36,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           child: const CreateScreen(),
         );
       case 2:
-        return const UpdateScreen();
+        return BlocProvider(
+          create: (context) => CrudBloc(),
+          child: const UpdateScreen(),
+        );
       case 3:
         return const FuzzyScreen();
       default:

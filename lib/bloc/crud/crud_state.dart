@@ -13,4 +13,6 @@ class ReadDataSuccess extends CrudState {
   List<Object?> get props => [data];
 }
 
-class SendDataSucces extends CrudState {}
+class SendDataSuccess extends CrudState {}
+
+class UpdateDataSuccess extends CrudState {}

@@ -21,7 +21,7 @@ class _CreateScreenState extends State<CreateScreen> {
   Widget build(BuildContext context) {
     return BlocListener<CrudBloc, CrudState>(
       listener: (context, state) {
-        if (state is SendDataSucces) {
+        if (state is SendDataSuccess) {
           setState(() {
             jobCtrl.text = "";
             nameCtrl.text = "";

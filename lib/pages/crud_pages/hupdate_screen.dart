@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../bloc/crud/crud_bloc.dart';
 import '../../models/user_model.dart';
 import '../../helpers/widgets/form_text_global.dart';
 import '../../helpers/functions/system_log.dart';
@@ -36,14 +38,28 @@ class _UpdateScreenState extends State<UpdateScreen> {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(
             decelerationRate: ScrollDecelerationRate.fast),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: defaultMargin),
-            infoSection(),
-            updateSection(),
-            deleteButton(),
-          ],
+        child: BlocListener<CrudBloc, CrudState>(
+          listener: (context, state) {
+            if (state is SendDataSuccess) {
+              setState(() {
+                jobCtrl.text = "";
+                nameCtrl.text = "";
+              });
+              showSnackbar("Update Data Success");
+            }
+            if (state is CrudError) {
+              showSnackbar("Update Data Failed Please check your connection");
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: defaultMargin),
+              infoSection(),
+              updateSection(),
+              deleteButton(),
+            ],
+          ),
         ),
       ),
     ));
@@ -190,19 +206,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   void updateData(String name, String job) async {
-    var postData = {'name': name, 'job': job};
-    response = await postConnect('https://reqres.in/api/users/2', postData);
-    if (response.statusCode == 201) {
-      systemLog(response.toString());
-      jobCtrl.text = "";
-      nameCtrl.text = "";
-      setState(() {});
-      Future.delayed(const Duration(milliseconds: 200));
-      showSnackbar("Berhasil Update Data");
-    } else {
-      systemLog("Failed to get data");
-      showSnackbar("Gagal Update Data");
-    }
+    final CrudBloc crudBloc = BlocProvider.of<CrudBloc>(context);
+    crudBloc.add(UpdateData(postData: {'name': name, 'job': job}));
   }
 
   void deleteData() async {

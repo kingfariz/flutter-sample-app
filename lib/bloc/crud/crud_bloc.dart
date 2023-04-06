@@ -30,9 +30,23 @@ class CrudBloc extends Bloc<CrudEvent, CrudState> {
             await postConnect('https://reqres.in/api/users', event.postData);
         if (response.statusCode == 201) {
           systemLog(response.toString());
-          emit(SendDataSucces());
+          emit(SendDataSuccess());
         } else {
           systemLog("Failed to send data");
+        }
+      } catch (e) {
+        systemLog(e.toString());
+      }
+    });
+    on<UpdateData>((event, emit) async {
+      try {
+        Response response =
+            await postConnect('https://reqres.in/api/users/2', event.postData);
+        if (response.statusCode == 201) {
+          systemLog(response.toString());
+          emit(SendDataSuccess());
+        } else {
+          systemLog("Failed to update data");
         }
       } catch (e) {
         systemLog(e.toString());

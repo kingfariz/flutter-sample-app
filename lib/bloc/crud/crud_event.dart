@@ -12,3 +12,8 @@ class SendData extends CrudEvent {
   final Map<String, dynamic> postData;
   SendData({required this.postData});
 }
+
+class UpdateData extends CrudEvent {
+  final Map<String, dynamic> postData;
+  UpdateData({required this.postData});
+}
