@@ -1,12 +1,9 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:sample_project/bloc/crud/crud_bloc.dart';
 import '../../helpers/system_log.dart';
 import '../../helpers/themes.dart';
 import '../../services/dio_setting.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReadScreen extends StatefulWidget {
   const ReadScreen({Key? key}) : super(key: key);
@@ -53,37 +50,28 @@ class _ReadScreenState extends State<ReadScreen> {
         body: Container(
             padding: const EdgeInsets.only(
                 top: defaultMargin, right: defaultMargin, left: defaultMargin),
-            child: BlocBuilder<CrudBloc, CrudState>(
-              builder: (context, state) {
-                if (state is ReadDataError) {
-                  systemLog("Bloc state: Error");
-                }
-                if (state is CrudLoading) {
-                  return const SpinKitChasingDots(
-                    size: 50,
-                    color: primaryColor,
+            child: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  final Map<String, dynamic> item = data[index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(item['email']),
+                      subtitle: Text(item['first_name']),
+                    ),
                   );
-                }
-                if (state is ReadDataSuccess) {
-                  data = state.data;
-                }
-                return ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final Map<String, dynamic> item = data[index];
-                      return Card(
-                        child: ListTile(
-                          title: Text(item['email']),
-                          subtitle: Text(item['first_name']),
-                        ),
-                      );
-                    });
-              },
-            )));
+                })));
   }
 
   void getData(String page) async {
-    final CrudBloc crudBloc = BlocProvider.of<CrudBloc>(context);
-    crudBloc.add(ReadData(page: page));
+    response = await getConnect('https://reqres.in/api/users', page);
+    if (response.statusCode == 200) {
+      setState(() {
+        jsonResponse = jsonDecode(response.toString());
+        data = jsonResponse['data'];
+      });
+    } else {
+      systemLog("Failed to get data");
+    }
   }
 }

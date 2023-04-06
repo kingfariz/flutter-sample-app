@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sample_project/bloc/crud/crud_bloc.dart';
 
 import '../../helpers/themes.dart';
 import '../crud_pages/fuzzy.dart';
@@ -24,7 +26,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Widget body() {
     switch (currentIndex) {
       case 0:
-        return const ReadScreen();
+        return BlocProvider(
+          create: (context) => CrudBloc(),
+          child: const ReadScreen(),
+        );
       case 1:
         return const CreateScreen();
       case 2:

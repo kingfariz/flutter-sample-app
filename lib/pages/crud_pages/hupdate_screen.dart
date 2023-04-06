@@ -185,7 +185,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         userModel = UserModel.fromJson(jsonDecode(response.toString()));
       });
     } else {
-      systemLog("gagal mendapat data");
+      systemLog("Failed to get data");
     }
   }
 
@@ -200,7 +200,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
       Future.delayed(const Duration(milliseconds: 200));
       showSnackbar("Berhasil Update Data");
     } else {
-      systemLog("gagal mendapat data");
+      systemLog("Failed to get data");
       showSnackbar("Gagal Update Data");
     }
   }
