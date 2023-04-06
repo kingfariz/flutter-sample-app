@@ -1,6 +1,9 @@
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sample_project/helpers/functions/system_log.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../../helpers/themes.dart';
 
 class FuzzyVariable {
@@ -10,16 +13,30 @@ class FuzzyVariable {
   FuzzyVariable(this.name, this.fuzzySet);
 
   double getDegreeOfMembership(double value) {
-    if (value <= fuzzySet[0] || value >= fuzzySet[2]) {
+    if (value <= fuzzySet[0]) {
       return 0;
+    } else if (value >= fuzzySet[2]) {
+      return 1;
     } else if (value == fuzzySet[1]) {
       return 1;
     } else if (value > fuzzySet[0] && value < fuzzySet[1]) {
       return (value - fuzzySet[0]) / (fuzzySet[1] - fuzzySet[0]);
     } else {
-      return (fuzzySet[2] - value) / (fuzzySet[2] - fuzzySet[1]);
+      var extendedRange = [
+        fuzzySet[1],
+        fuzzySet[2],
+        fuzzySet[2] + (fuzzySet[2] - fuzzySet[1])
+      ];
+      return (extendedRange[2] - value) / (extendedRange[2] - extendedRange[1]);
     }
   }
+}
+
+class FuzzyChartData {
+  final String variable;
+  final double membershipDegree;
+
+  FuzzyChartData(this.variable, this.membershipDegree);
 }
 
 class FuzzyScreen extends StatefulWidget {
@@ -31,11 +48,13 @@ class FuzzyScreen extends StatefulWidget {
 
 class _FuzzyScreenState extends State<FuzzyScreen> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController workPerformanceCtrl = TextEditingController(text: '');
-  TextEditingController behaviorCtrl = TextEditingController(text: '');
-  TextEditingController attendanceCtrl = TextEditingController(text: '');
   double result = 0.0;
+  double _valueBehavior = 50.0;
+  double _valueWorkPerformance = 50.0;
+  double _valueAttendance = 50.0;
   String pernyataan = '';
+  List<FuzzyChartData> chartData = [];
+
   @override
   void initState() {
     super.initState();
@@ -46,10 +65,12 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
     return Scaffold(
         body: Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          updateSection(),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            updateSection(),
+          ],
+        ),
       ),
     ));
   }
@@ -62,8 +83,8 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
       child: ElevatedButton(
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
-            fuzzyCalculator(workPerformanceCtrl.text.toString(),
-                behaviorCtrl.text.toString(), attendanceCtrl.text.toString());
+            fuzzyCalculator(
+                _valueWorkPerformance, _valueBehavior, _valueAttendance);
           }
         },
         style: ElevatedButton.styleFrom(
@@ -71,7 +92,7 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12))),
         child: Text(
-          'SEND',
+          'CALCULATE',
           style: primaryTextStyle.copyWith(
               fontSize: 16, fontWeight: FontWeight.w500, color: whiteColor),
         ),
@@ -79,12 +100,12 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
     );
   }
 
-  void fuzzyCalculator(String workPerformanceExt, String behaviorExt,
-      String attendanceExt) async {
+  void fuzzyCalculator(double workPerformanceExt, double behaviorExt,
+      double attendanceExt) async {
     // Define the fuzzy sets for each variable
-    List<double> workPerformanceSet = [0, 50, 100];
-    List<double> behaviorSet = [0, 5, 10];
-    List<double> attendanceSet = [0, 50, 100];
+    List<double> workPerformanceSet = [40, 70, 100];
+    List<double> behaviorSet = [40, 70, 10];
+    List<double> attendanceSet = [40, 80, 100];
 
     // Create the fuzzy variables
     var workPerformance = FuzzyVariable("Work Performance", workPerformanceSet);
@@ -92,9 +113,9 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
     var attendance = FuzzyVariable("Attendance", attendanceSet);
 
     // Set the input values for each variable
-    var workPerformanceValue = double.parse(workPerformanceExt);
-    var behaviorValue = double.parse(behaviorExt);
-    var attendanceValue = double.parse(attendanceExt);
+    var workPerformanceValue = workPerformanceExt;
+    var behaviorValue = behaviorExt;
+    var attendanceValue = attendanceExt;
 
     // Evaluate the fuzzy logic for each variable
     var workPerformanceDegreeOfMembership =
@@ -104,28 +125,62 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
     var attendanceDegreeOfMembership =
         attendance.getDegreeOfMembership(attendanceValue);
 
-    // Print the output values for each variable
-    systemLog("Work Performance: $workPerformanceDegreeOfMembership");
-    systemLog("Behavior: $behaviorDegreeOfMembership");
-    systemLog("Attendance: $attendanceDegreeOfMembership");
+    // Calculate the degree of membership for each action
+    var actionMembership = {
+      "Promotion": min<double>(
+          min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
+          attendanceDegreeOfMembership),
+      "Salary Increase": min<double>(
+          min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
+          1 - attendanceDegreeOfMembership),
+      "Contract Continue Without Increase": min<double>(
+          1 -
+              min(workPerformanceDegreeOfMembership,
+                  behaviorDegreeOfMembership),
+          attendanceDegreeOfMembership),
+      "Fired": min<double>(
+          1 -
+              min(workPerformanceDegreeOfMembership,
+                  behaviorDegreeOfMembership),
+          1 - attendanceDegreeOfMembership),
+    };
 
-    result = ((((workPerformanceDegreeOfMembership +
-                    behaviorDegreeOfMembership +
-                    attendanceDegreeOfMembership) /
-                3) -
-            1) *
-        -100);
-    systemLog("result:${result.round()}");
+    // Determine the highest degree of membership and the corresponding action
+    var highestMembership = actionMembership.values.reduce(max);
+    var highestActions = actionMembership.keys
+        .where((key) => actionMembership[key] == highestMembership);
+    pernyataan = highestActions.first;
 
-    if (result.round() > 90) {
-      pernyataan = "PROMOTION";
-    } else if (result.round() > 80) {
-      pernyataan = "SALARY INCREASE";
-    } else if (result.round() > 60) {
-      pernyataan = "CONTRACT CONTINUE";
-    } else {
-      pernyataan = "FIRED";
-    }
+    systemLog("\nAction aa: $pernyataan");
+
+    chartData = [
+      FuzzyChartData(
+          'Promote',
+          min<double>(
+              min(workPerformanceDegreeOfMembership,
+                  behaviorDegreeOfMembership),
+              attendanceDegreeOfMembership)),
+      FuzzyChartData(
+          'Increase Salary',
+          min<double>(
+              min(workPerformanceDegreeOfMembership,
+                  behaviorDegreeOfMembership),
+              1 - attendanceDegreeOfMembership)),
+      FuzzyChartData(
+          'Continue',
+          min<double>(
+              1 -
+                  min(workPerformanceDegreeOfMembership,
+                      behaviorDegreeOfMembership),
+              attendanceDegreeOfMembership)),
+      FuzzyChartData(
+          'Fired',
+          min<double>(
+              1 -
+                  min(workPerformanceDegreeOfMembership,
+                      behaviorDegreeOfMembership),
+              1 - attendanceDegreeOfMembership)),
+    ];
     setState(() {});
   }
 
@@ -136,69 +191,72 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
         const SizedBox(height: 10),
         Text('workPerformance', style: primaryTextStyle),
         const SizedBox(height: 8),
-        TextFormField(
-          minLines: 2,
-          maxLines: 3,
-          maxLength: 300,
-          controller: workPerformanceCtrl,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return "Please Enter Name";
-            } else {
-              return null;
-            }
+        SfSlider(
+          min: 0.0,
+          max: 100.0,
+          value: _valueWorkPerformance,
+          interval: 25,
+          showTicks: true,
+          showLabels: false,
+          enableTooltip: true,
+          minorTicksPerInterval: 1,
+          onChanged: (dynamic value) {
+            setState(() {
+              _valueWorkPerformance = value;
+            });
           },
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'workPerformance',
-              counterText: ''),
         ),
         const SizedBox(
           height: 12,
         ),
         Text('behavior', style: primaryTextStyle),
-        TextFormField(
-          minLines: 2,
-          maxLines: 3,
-          maxLength: 300,
-          controller: behaviorCtrl,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return "Please Enter Job";
-            } else {
-              return null;
-            }
+        SfSlider(
+          min: 0.0,
+          max: 100.0,
+          value: _valueBehavior,
+          interval: 25,
+          showTicks: true,
+          showLabels: false,
+          enableTooltip: true,
+          minorTicksPerInterval: 1,
+          onChanged: (dynamic value) {
+            setState(() {
+              _valueBehavior = value;
+            });
           },
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'behavior',
-              counterText: ''),
         ),
         const SizedBox(
           height: 12,
         ),
         Text('attendance', style: primaryTextStyle),
-        TextFormField(
-          minLines: 2,
-          maxLines: 3,
-          maxLength: 300,
-          controller: attendanceCtrl,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return "Please Enter Job";
-            } else {
-              return null;
-            }
+        SfSlider(
+          min: 0.0,
+          max: 100.0,
+          value: _valueAttendance,
+          interval: 25,
+          showTicks: true,
+          showLabels: false,
+          enableTooltip: true,
+          minorTicksPerInterval: 1,
+          onChanged: (dynamic value) {
+            setState(() {
+              _valueAttendance = value;
+            });
           },
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'attendance',
-              counterText: ''),
         ),
-        Text('RESULT $result', style: primaryTextStyle.copyWith(fontSize: 20)),
-        Text('DESCRIPTION $pernyataan',
+        Text('RESULT:\n$pernyataan',
             style: primaryTextStyle.copyWith(fontSize: 20)),
-        submitButton()
+        submitButton(),
+        SfCartesianChart(
+            primaryXAxis: CategoryAxis(),
+            series: <ColumnSeries<FuzzyChartData, String>>[
+              ColumnSeries<FuzzyChartData, String>(
+                  dataSource: chartData,
+                  xValueMapper: (FuzzyChartData data, _) => data.variable,
+                  yValueMapper: (FuzzyChartData data, _) =>
+                      data.membershipDegree,
+                  dataLabelSettings: const DataLabelSettings(isVisible: true))
+            ]),
       ]),
     );
   }

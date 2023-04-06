@@ -9,3 +9,5 @@ used libraries:
 - flutter_bloc: ^8.1.2
 - flutter_spinkit: ^5.1.0
 - reactive_forms: ^14.3.0
+- syncfusion_flutter_sliders: ^21.1.38
+- syncfusion_flutter_charts: ^21.1.38
