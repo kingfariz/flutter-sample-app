@@ -104,8 +104,8 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
       double attendanceExt) async {
     // Define the fuzzy sets for each variable
     List<double> workPerformanceSet = [40, 70, 100];
-    List<double> behaviorSet = [40, 70, 10];
-    List<double> attendanceSet = [40, 80, 100];
+    List<double> behaviorSet = [40, 60, 100];
+    List<double> attendanceSet = [40, 60, 100];
 
     // Create the fuzzy variables
     var workPerformance = FuzzyVariable("Work Performance", workPerformanceSet);
@@ -133,7 +133,7 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
       "Salary Increase": min<double>(
           min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
           1 - attendanceDegreeOfMembership),
-      "Contract Continue Without Increase": min<double>(
+      "Contract Continue Without Salary Increase": min<double>(
           1 -
               min(workPerformanceDegreeOfMembership,
                   behaviorDegreeOfMembership),
@@ -244,8 +244,11 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
             });
           },
         ),
-        Text('RESULT:\n$pernyataan',
-            style: primaryTextStyle.copyWith(fontSize: 20)),
+        Text(
+          'RESULT:\n$pernyataan',
+          style: primaryTextStyle.copyWith(fontSize: 20),
+          textAlign: TextAlign.center,
+        ),
         submitButton(),
         SfCartesianChart(
             primaryXAxis: CategoryAxis(),
