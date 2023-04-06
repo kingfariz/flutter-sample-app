@@ -44,10 +44,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
             return BlocListener<CrudBloc, CrudState>(
               listener: (context, state) {
                 if (state is UpdateDataSuccess) {
-                  // setState(() {
-                  //   jobCtrl.text = "";
-                  //   nameCtrl.text = "";
-                  // });
                   formGroup.resetState({
                     'name': ControlState<String>(value: null),
                     'jobs': ControlState<String>(value: null),
@@ -91,8 +87,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
       const SizedBox(height: defaultMargin),
       infoSection(),
       const SizedBox(height: 10),
-      Text('Name', style: primaryTextStyle),
-      const SizedBox(height: 8),
       ReactiveTextField<String>(
         formControlName: 'name',
         validationMessages: {
