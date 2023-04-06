@@ -1,13 +1,11 @@
-import 'dart:convert';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ProgressIndicator;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/crud/crud_bloc.dart';
 import '../../models/user_model.dart';
 import '../../helpers/widgets/form_text_global.dart';
-import '../../helpers/functions/system_log.dart';
 import '../../helpers/themes.dart';
-import '../../services/dio_setting.dart';
 
 class UpdateScreen extends StatefulWidget {
   const UpdateScreen({super.key});
@@ -20,15 +18,17 @@ class _UpdateScreenState extends State<UpdateScreen> {
   late Response response;
   late Map<String, dynamic> jsonResponse;
   UserModel userModel = UserModel();
-  TextEditingController nameCtrl = TextEditingController(text: '');
-  TextEditingController jobCtrl = TextEditingController(text: '');
-  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     getData();
   }
+
+  FormGroup buildForm() => fb.group(<String, Object>{
+        'name': ['', Validators.required, Validators.minLength(5)],
+        'jobs': ['', Validators.required, Validators.minLength(5)],
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -38,107 +38,106 @@ class _UpdateScreenState extends State<UpdateScreen> {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(
             decelerationRate: ScrollDecelerationRate.fast),
-        child: BlocListener<CrudBloc, CrudState>(
-          listener: (context, state) {
-            if (state is UpdateDataSuccess) {
-              setState(() {
-                jobCtrl.text = "";
-                nameCtrl.text = "";
-              });
-              showSnackbar("Update Data Success");
-            }
-            if (state is DeleteDataSuccess) {
-              setState(() {
-                jobCtrl.text = "";
-                nameCtrl.text = "";
-              });
-              showSnackbar("Delete Data Success");
-            }
-            if (state is UpdateDataSuccess) {
-              setState(() {
-                jobCtrl.text = "";
-                nameCtrl.text = "";
-              });
-              showSnackbar("Update Data Success");
-            }
-            if (state is GetDataSuccess) {
-              setState(() {
-                userModel = UserModel.fromJson(state.data);
-              });
-            }
-            if (state is CrudError) {
-              showSnackbar("Update Data Failed Please check your connection");
-            }
+        child: ReactiveFormBuilder(
+          form: buildForm,
+          builder: (context, formGroup, child) {
+            return BlocListener<CrudBloc, CrudState>(
+              listener: (context, state) {
+                if (state is UpdateDataSuccess) {
+                  // setState(() {
+                  //   jobCtrl.text = "";
+                  //   nameCtrl.text = "";
+                  // });
+                  formGroup.resetState({
+                    'name': ControlState<String>(value: null),
+                    'jobs': ControlState<String>(value: null),
+                  }, removeFocus: true);
+                  showSnackbar("Update Data Success");
+                }
+                if (state is DeleteDataSuccess) {
+                  formGroup.resetState({
+                    'name': ControlState<String>(value: null),
+                    'jobs': ControlState<String>(value: null),
+                  }, removeFocus: true);
+                  showSnackbar("Delete Data Success");
+                }
+                if (state is GetDataSuccess) {
+                  setState(() {
+                    userModel = UserModel.fromJson(state.data);
+                  });
+                }
+                if (state is CrudError) {
+                  showSnackbar(
+                      "Update Data Failed Please check your connection");
+                }
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  updateSection(),
+                  submitButton(form: formGroup),
+                  deleteButton(),
+                ],
+              ),
+            );
           },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: defaultMargin),
-              infoSection(),
-              updateSection(),
-              deleteButton(),
-            ],
-          ),
         ),
       ),
     ));
   }
 
   updateSection() {
-    return Form(
-      key: _formKey,
-      child: Column(children: [
-        const SizedBox(height: 10),
-        Text('Name', style: primaryTextStyle),
-        const SizedBox(height: 8),
-        TextFormField(
-          minLines: 2,
-          maxLines: 3,
-          maxLength: 300,
-          controller: nameCtrl,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return "Please Enter Name";
-            } else {
-              return null;
-            }
-          },
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(), hintText: 'Name', counterText: ''),
+    return Column(children: [
+      const SizedBox(height: defaultMargin),
+      infoSection(),
+      const SizedBox(height: 10),
+      Text('Name', style: primaryTextStyle),
+      const SizedBox(height: 8),
+      ReactiveTextField<String>(
+        formControlName: 'name',
+        validationMessages: {
+          ValidationMessage.required: (_) => 'The name must not be empty',
+          ValidationMessage.minLength: (_) =>
+              'Please enter more than 4 characters'
+        },
+        textInputAction: TextInputAction.next,
+        decoration: const InputDecoration(
+          labelText: 'Name',
+          helperText: '',
+          helperStyle: TextStyle(height: 0.7),
+          errorStyle: TextStyle(height: 0.7),
         ),
-        const SizedBox(
-          height: 12,
+      ),
+      ReactiveTextField<String>(
+        formControlName: 'jobs',
+        validationMessages: {
+          ValidationMessage.required: (_) => 'The Jobs must not be empty',
+          ValidationMessage.minLength: (_) =>
+              'Please enter more than 4 characters'
+        },
+        textInputAction: TextInputAction.done,
+        decoration: const InputDecoration(
+          labelText: 'Jobs',
+          helperText: '',
+          helperStyle: TextStyle(height: 0.7),
+          errorStyle: TextStyle(height: 0.7),
         ),
-        Text('Job', style: primaryTextStyle),
-        TextFormField(
-          minLines: 2,
-          maxLines: 3,
-          maxLength: 300,
-          controller: jobCtrl,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return "Please Enter Job";
-            } else {
-              return null;
-            }
-          },
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(), hintText: 'Job', counterText: ''),
-        ),
-        submitButton()
-      ]),
-    );
+      ),
+    ]);
   }
 
-  Widget submitButton() {
+  Widget submitButton({required FormGroup form}) {
     return Container(
       height: 50,
       width: double.infinity,
       margin: const EdgeInsets.only(top: 30),
       child: ElevatedButton(
         onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            updateData(nameCtrl.text.toString(), jobCtrl.text.toString());
+          if (form.valid) {
+            updateData(
+                form.value['name'].toString(), form.value['jobs'].toString());
+          } else {
+            form.markAllAsTouched();
           }
         },
         style: ElevatedButton.styleFrom(
