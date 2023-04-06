@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sample_project/bloc/crud/crud_bloc.dart';
 
 import '../../helpers/themes.dart';
-import '../crud_pages/fuzzy.dart';
+import '../fuzzy_pages/fuzzy.dart';
 import '../crud_pages/hcreate_screen.dart';
 import '../crud_pages/hread_screen.dart';
 import '../crud_pages/hupdate_screen.dart';
