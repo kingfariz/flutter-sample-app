@@ -19,24 +19,25 @@ class _CreateScreenState extends State<CreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CrudBloc, CrudState>(
-      listener: (context, state) {
-        if (state is SendDataSuccess) {
-          setState(() {
-            jobCtrl.text = "";
-            nameCtrl.text = "";
-          });
-          showSnackbar("Success");
-        }
-        if (state is CrudError) {
-          showSnackbar("Failed to Send Data, Please check your connection");
-        }
-      },
-      child: Container(
-          margin: const EdgeInsets.only(
-              top: defaultMargin, right: defaultMargin, left: defaultMargin),
-          child: Form(
-            key: _formKey,
+    return Container(
+        margin: const EdgeInsets.only(
+            top: defaultMargin, right: defaultMargin, left: defaultMargin),
+        child: Form(
+          key: _formKey,
+          child: BlocListener<CrudBloc, CrudState>(
+            listener: (context, state) {
+              if (state is SendDataSuccess) {
+                setState(() {
+                  jobCtrl.text = "";
+                  nameCtrl.text = "";
+                });
+                showSnackbar("Success");
+              }
+              if (state is CrudError) {
+                showSnackbar(
+                    "Failed to Send Data, Please check your connection");
+              }
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -85,8 +86,8 @@ class _CreateScreenState extends State<CreateScreen> {
                 submitButton()
               ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 
   Widget submitButton() {
