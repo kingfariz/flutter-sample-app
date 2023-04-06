@@ -8,3 +8,4 @@ used libraries:
 - dio: ^5.0.3
 - flutter_bloc: ^8.1.2
 - flutter_spinkit: ^5.1.0
+- reactive_forms: ^14.3.0
