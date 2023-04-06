@@ -2,5 +2,7 @@
 
 void systemLog(String e) {
   //TODO CHECK PRINT, comment below code to deactivate
-  print(e);
+  if (e != "null") {
+    print(e);
+  }
 }
