@@ -2,6 +2,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide ProgressIndicator;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../bloc/crud/crud_bloc.dart';
 import '../../models/user_model.dart';
 import '../../helpers/widgets/form_text_global.dart';
@@ -173,10 +174,14 @@ class _UpdateScreenState extends State<UpdateScreen> {
     return Column(
       children: [
         userModel.avatarUrl == ""
-            ? const Icon(
-                Icons.timelapse_outlined,
-                size: 80,
-              )
+            ? Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: 200.0,
+                  height: 190.0,
+                  color: Colors.white,
+                ))
             : Image.network(
                 userModel.avatarUrl,
                 fit: BoxFit.fill,
