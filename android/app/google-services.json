@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "150544947895",
+    "project_id": "xpedia-sample-app",
+    "storage_bucket": "xpedia-sample-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150544947895:android:57a6942eb57d9c75240b32",
+        "android_client_info": {
+          "package_name": "com.xpedia.sample_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150544947895-a3via1quq4leuqsljcs70c5oedhp11he.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjnHcLMyRrVCUtxYBa2P7IszYM7ZHhteI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150544947895-a3via1quq4leuqsljcs70c5oedhp11he.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
