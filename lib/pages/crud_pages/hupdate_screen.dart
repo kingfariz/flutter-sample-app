@@ -40,7 +40,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
             decelerationRate: ScrollDecelerationRate.fast),
         child: BlocListener<CrudBloc, CrudState>(
           listener: (context, state) {
-            if (state is SendDataSuccess) {
+            if (state is UpdateDataSuccess) {
               setState(() {
                 jobCtrl.text = "";
                 nameCtrl.text = "";
