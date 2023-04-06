@@ -57,28 +57,28 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               margin: const EdgeInsets.only(top: 8, bottom: 4),
               child: const Icon(Icons.home),
             ),
-            label: 'Read Screen',
+            label: 'Read',
           ),
           BottomNavigationBarItem(
             icon: Container(
               margin: const EdgeInsets.only(top: 8, bottom: 4),
               child: const Icon(Icons.add),
             ),
-            label: 'Create Screen',
+            label: 'Create',
           ),
           BottomNavigationBarItem(
             icon: Container(
               margin: const EdgeInsets.only(top: 8, bottom: 4),
               child: const Icon(Icons.update),
             ),
-            label: 'Update Screen',
+            label: 'Update',
           ),
           BottomNavigationBarItem(
             icon: Container(
               margin: const EdgeInsets.only(top: 8, bottom: 4),
-              child: const Icon(Icons.update),
+              child: const Icon(Icons.emoji_people),
             ),
-            label: 'Fuzzy Screen',
+            label: 'Fuzzy',
           ),
         ]);
   }
