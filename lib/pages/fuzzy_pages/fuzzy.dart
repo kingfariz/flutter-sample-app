@@ -47,7 +47,6 @@ class FuzzyScreen extends StatefulWidget {
 }
 
 class _FuzzyScreenState extends State<FuzzyScreen> {
-  final _formKey = GlobalKey<FormState>();
   double result = 0.0;
   double _valueBehavior = 50.0;
   double _valueWorkPerformance = 50.0;
@@ -64,10 +63,16 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.only(
+          left: defaultMargin, right: defaultMargin, top: 30),
       child: SingleChildScrollView(
         child: Column(
           children: [
+            Text(
+              'Employees performance calculator',
+              style: primaryBigTextStyle,
+              textAlign: TextAlign.center,
+            ),
             updateSection(),
           ],
         ),
@@ -82,10 +87,8 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
       margin: const EdgeInsets.only(top: 30, bottom: 30),
       child: ElevatedButton(
         onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            fuzzyCalculator(
-                _valueWorkPerformance, _valueBehavior, _valueAttendance);
-          }
+          fuzzyCalculator(
+              _valueWorkPerformance, _valueBehavior, _valueAttendance);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: primaryColor,
@@ -103,7 +106,7 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
   void fuzzyCalculator(double workPerformanceExt, double behaviorExt,
       double attendanceExt) async {
     // Define the fuzzy sets for each variable
-    List<double> workPerformanceSet = [40, 70, 100];
+    List<double> workPerformanceSet = [45, 60, 100];
     List<double> behaviorSet = [40, 60, 100];
     List<double> attendanceSet = [40, 60, 100];
 
@@ -185,82 +188,78 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
   }
 
   updateSection() {
-    return Form(
-      key: _formKey,
-      child: Column(children: [
-        const SizedBox(height: 10),
-        Text('workPerformance', style: primaryTextStyle),
-        const SizedBox(height: 8),
-        SfSlider(
-          min: 0.0,
-          max: 100.0,
-          value: _valueWorkPerformance,
-          interval: 25,
-          showTicks: true,
-          showLabels: false,
-          enableTooltip: true,
-          minorTicksPerInterval: 1,
-          onChanged: (dynamic value) {
-            setState(() {
-              _valueWorkPerformance = value;
-            });
-          },
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        Text('behavior', style: primaryTextStyle),
-        SfSlider(
-          min: 0.0,
-          max: 100.0,
-          value: _valueBehavior,
-          interval: 25,
-          showTicks: true,
-          showLabels: false,
-          enableTooltip: true,
-          minorTicksPerInterval: 1,
-          onChanged: (dynamic value) {
-            setState(() {
-              _valueBehavior = value;
-            });
-          },
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        Text('attendance', style: primaryTextStyle),
-        SfSlider(
-          min: 0.0,
-          max: 100.0,
-          value: _valueAttendance,
-          interval: 25,
-          showTicks: true,
-          showLabels: false,
-          enableTooltip: true,
-          minorTicksPerInterval: 1,
-          onChanged: (dynamic value) {
-            setState(() {
-              _valueAttendance = value;
-            });
-          },
-        ),
-        Text(
-          'RESULT:\n$pernyataan',
-          style: primaryTextStyle.copyWith(fontSize: 20),
-          textAlign: TextAlign.center,
-        ),
-        submitButton(),
-        SfCartesianChart(
-            primaryXAxis: CategoryAxis(),
-            series: <ColumnSeries<FuzzyChartData, String>>[
-              ColumnSeries<FuzzyChartData, String>(
-                  dataSource: chartData,
-                  xValueMapper: (FuzzyChartData data, _) => data.variable,
-                  yValueMapper: (FuzzyChartData data, _) =>
-                      data.membershipDegree,
-                  dataLabelSettings: const DataLabelSettings(isVisible: true))
-            ]),
-      ]),
-    );
+    return Column(children: [
+      const SizedBox(height: 20),
+      Text('workPerformance', style: primaryTextStyle),
+      const SizedBox(height: 8),
+      SfSlider(
+        min: 0.0,
+        max: 100.0,
+        value: _valueWorkPerformance,
+        interval: 25,
+        showTicks: true,
+        showLabels: false,
+        enableTooltip: true,
+        minorTicksPerInterval: 1,
+        onChanged: (dynamic value) {
+          setState(() {
+            _valueWorkPerformance = value;
+          });
+        },
+      ),
+      const SizedBox(
+        height: 12,
+      ),
+      Text('behavior', style: primaryTextStyle),
+      SfSlider(
+        min: 0.0,
+        max: 100.0,
+        value: _valueBehavior,
+        interval: 25,
+        showTicks: true,
+        showLabels: false,
+        enableTooltip: true,
+        minorTicksPerInterval: 1,
+        onChanged: (dynamic value) {
+          setState(() {
+            _valueBehavior = value;
+          });
+        },
+      ),
+      const SizedBox(
+        height: 12,
+      ),
+      Text('attendance', style: primaryTextStyle),
+      SfSlider(
+        min: 0.0,
+        max: 100.0,
+        value: _valueAttendance,
+        interval: 25,
+        showTicks: true,
+        showLabels: false,
+        enableTooltip: true,
+        minorTicksPerInterval: 1,
+        onChanged: (dynamic value) {
+          setState(() {
+            _valueAttendance = value;
+          });
+        },
+      ),
+      Text(
+        'RESULT:\n$pernyataan',
+        style: primaryTextStyle.copyWith(fontSize: 20),
+        textAlign: TextAlign.center,
+      ),
+      submitButton(),
+      SfCartesianChart(
+          primaryXAxis: CategoryAxis(),
+          series: <ColumnSeries<FuzzyChartData, String>>[
+            ColumnSeries<FuzzyChartData, String>(
+                dataSource: chartData,
+                xValueMapper: (FuzzyChartData data, _) => data.variable,
+                yValueMapper: (FuzzyChartData data, _) => data.membershipDegree,
+                dataLabelSettings: const DataLabelSettings(isVisible: true))
+          ]),
+    ]);
   }
 }
