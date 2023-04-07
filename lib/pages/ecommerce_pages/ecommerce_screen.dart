@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:sample_project/bloc/product/product_bloc.dart';
 import 'package:sample_project/helpers/functions/string_formatter.dart';
+import 'package:sample_project/models/product_model.dart';
 import '../../helpers/themes.dart';
 
 class EcommercePage extends StatefulWidget {
@@ -13,35 +17,53 @@ class _EcommercePageState extends State<EcommercePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        shrinkWrap: true,
-        // primary: false,
-        physics: const BouncingScrollPhysics(),
-        slivers: <Widget>[
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                childAspectRatio: 0.625,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return _buildRecomendedProductCard(index);
-                },
-                // childCount: recomendedProductData.length,
-                childCount: 8,
-              ),
-            ),
-          ),
-        ],
+      body: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          if (state is ProductLoading) {
+            return const SpinKitChasingDots(
+              size: 50,
+              color: primaryColor,
+            );
+          }
+          if (state is ProductLoaded) {
+            return CustomScrollView(
+              shrinkWrap: true,
+              // primary: false,
+              physics: const BouncingScrollPhysics(),
+              slivers: <Widget>[
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 0.625,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (
+                        BuildContext context,
+                        int index,
+                      ) {
+                        return _buildRecomendedProductCard(index, state.data);
+                      },
+                      childCount: state.data.length,
+                      // childCount: 8,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Text("Something Error");
+          }
+        },
       ),
     );
   }
 
-  Widget _buildRecomendedProductCard(index) {
+  Widget _buildRecomendedProductCard(index, List<ProductModel> productModel) {
     final double boxImageSize =
         ((MediaQuery.of(context).size.width) - 24) / 2 - 12;
     return Card(
@@ -59,6 +81,7 @@ class _EcommercePageState extends State<EcommercePage> {
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10), topRight: Radius.circular(10)),
               child: Image.network(
+                // "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/1/11/89e42c0c-aa44-4447-b5b1-154dc05aad98.png",
                 "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/1/11/89e42c0c-aa44-4447-b5b1-154dc05aad98.png",
                 fit: BoxFit.fill,
                 height: boxImageSize,
@@ -84,8 +107,8 @@ class _EcommercePageState extends State<EcommercePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    // recomendedProductData[index].name,
-                    "DELL Gaming G15 Ryzen 7 5800H RTX 3050TI",
+                    productModel[index].name.toString(),
+                    // "DELL Gaming G15 Ryzen 7 5800H RTX 3050TI",
                     style: productName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -96,9 +119,11 @@ class _EcommercePageState extends State<EcommercePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                            '\$ ${StringFormatter().removeDecimalZeroFormat(
-                              // recomendedProductData[index].price,
-                              13849000.0,
+                            'Rp. ${StringFormatter().removeDecimalZeroFormat(
+                              productModel[index].price == null
+                                  ? 0.0
+                                  : double.parse(productModel[index].price!),
+                              // 13849000.0,
                             )}',
                             style: productPrice),
                       ],
