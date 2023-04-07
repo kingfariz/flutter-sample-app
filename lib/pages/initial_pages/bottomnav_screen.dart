@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sample_project/bloc/crud/crud_bloc.dart';
 import 'package:sample_project/bloc/product/product_bloc.dart';
 import 'package:sample_project/pages/ecommerce_pages/ecommerce_screen.dart';
-import 'package:sample_project/services/repositories/ecommerce_repositories/product_repository.dart';
-
 import '../../helpers/themes.dart';
 import '../fuzzy_pages/fuzzy.dart';
 import '../crud_pages/hcreate_screen.dart';
@@ -45,8 +43,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         );
       case 3:
         return BlocProvider(
-          create: (context) => ProductBloc(repository: ProductRepository())
-            ..add(LoadProductEvent()),
+          create: (context) => ProductBloc()..add(LoadProductEvent()),
           child: const EcommercePage(),
         );
       case 4:
