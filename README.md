@@ -14,3 +14,4 @@ used libraries:
 - shimmer: ^2.0.0
 - cloud_firestore: ^4.5.0
 - equatable: ^2.0.5
+- intl: ^0.18.0
