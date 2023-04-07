@@ -12,21 +12,8 @@ class LoadProductEvent extends ProductEvent {}
 class UpdateProductEvent extends ProductEvent {
   final List<ProductModel> products;
 
-  UpdateProductEvent(this.products);
+  const UpdateProductEvent(this.products);
 
   @override
   List<Object?> get props => [products];
 }
-
-
-
-// @immutable
-// abstract class CrudEvent {}
-
-// class LoadProductEvent extends CrudEvent {}
-
-// class UpdateProductEvent extends CrudEvent {
-//   final List<ProductModel> products;
-//   UpdateProductEvent({required this.products});
-//   List<Object?> get props => [products];
-// }

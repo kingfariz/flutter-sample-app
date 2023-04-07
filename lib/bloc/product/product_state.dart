@@ -14,23 +14,8 @@ class ProductError extends ProductState {}
 class ProductLoaded extends ProductState {
   final List<ProductModel> data;
 
-  ProductLoaded({this.data = const <ProductModel>[]});
+  const ProductLoaded({this.data = const <ProductModel>[]});
 
   @override
   List<Object> get props => [data];
 }
-
-
-
-// @immutable
-// abstract class ProductState {}
-
-// class ProductLoading extends ProductState {}
-
-// class ProductError extends ProductState {}
-
-// class ProductLoaded extends ProductState {
-//   final List<ProductModel> data;
-//   ProductLoaded({this.data = const <ProductModel>[]});
-//   List<Object?> get props => [data];
-// }
