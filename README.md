@@ -15,3 +15,4 @@ used libraries:
 - cloud_firestore: ^4.5.0
 - equatable: ^2.0.5
 - intl: ^0.18.0
+- firebase_core: ^2.9.0
