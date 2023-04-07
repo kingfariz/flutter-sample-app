@@ -12,3 +12,5 @@ used libraries:
 - syncfusion_flutter_sliders: ^21.1.38
 - syncfusion_flutter_charts: ^21.1.38
 - shimmer: ^2.0.0
+- cloud_firestore: ^4.5.0
+- equatable: ^2.0.5
