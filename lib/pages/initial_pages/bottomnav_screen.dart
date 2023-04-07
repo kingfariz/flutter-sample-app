@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sample_project/bloc/crud/crud_bloc.dart';
+import 'package:sample_project/pages/ecommerce_pages/ecommerce_screen.dart';
 
 import '../../helpers/themes.dart';
 import '../fuzzy_pages/fuzzy.dart';
@@ -41,6 +42,11 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           child: const UpdateScreen(),
         );
       case 3:
+        return BlocProvider(
+          create: (context) => CrudBloc(),
+          child: const EcommercePage(),
+        );
+      case 4:
         return const FuzzyScreen();
       default:
         return const ReadScreen();
@@ -78,6 +84,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               child: const Icon(Icons.update),
             ),
             label: 'Update',
+          ),
+          BottomNavigationBarItem(
+            icon: Container(
+              margin: const EdgeInsets.only(top: 8, bottom: 4),
+              child: const Icon(Icons.shopping_cart),
+            ),
+            label: 'Ecommerce',
           ),
           BottomNavigationBarItem(
             icon: Container(
