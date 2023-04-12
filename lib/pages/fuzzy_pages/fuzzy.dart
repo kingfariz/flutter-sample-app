@@ -105,22 +105,27 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
 
   void fuzzyCalculator(double workPerformanceExt, double behaviorExt,
       double attendanceExt) async {
-    // Define the fuzzy sets for each variable
-    List<double> workPerformanceSet = [45, 60, 100];
-    List<double> behaviorSet = [40, 60, 100];
-    List<double> attendanceSet = [40, 60, 100];
-
-    // Create the fuzzy variables
-    var workPerformance = FuzzyVariable("Work Performance", workPerformanceSet);
-    var behavior = FuzzyVariable("Behavior", behaviorSet);
-    var attendance = FuzzyVariable("Attendance", attendanceSet);
-
     // Set the input values for each variable
     var workPerformanceValue = workPerformanceExt;
     var behaviorValue = behaviorExt;
     var attendanceValue = attendanceExt;
 
-    // Evaluate the fuzzy logic for each variable
+    // Define the fuzzy sets for each input variable
+    List<double> workPerformanceSet = [40, 70, 100];
+    List<double> behaviorSet = [50, 80, 100];
+    List<double> attendanceSet = [30, 60, 100];
+
+    // Define the fuzzy sets for the output variable
+    List<double> promoteSet = [0, 50, 100];
+    List<double> increaseSalarySet = [0, 50, 100];
+    List<double> firedSet = [0, 50, 100];
+
+    // Create the fuzzy variables for the input and output variables
+    var workPerformance = FuzzyVariable("Work Performance", workPerformanceSet);
+    var behavior = FuzzyVariable("Behavior", behaviorSet);
+    var attendance = FuzzyVariable("Attendance", attendanceSet);
+
+    // Evaluate the degree of membership for each input variable
     var workPerformanceDegreeOfMembership =
         workPerformance.getDegreeOfMembership(workPerformanceValue);
     var behaviorDegreeOfMembership =
@@ -128,63 +133,99 @@ class _FuzzyScreenState extends State<FuzzyScreen> {
     var attendanceDegreeOfMembership =
         attendance.getDegreeOfMembership(attendanceValue);
 
-    // Calculate the degree of membership for each action
-    var actionMembership = {
-      "Promotion": min<double>(
-          min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
-          attendanceDegreeOfMembership),
-      "Salary Increase": min<double>(
-          min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
-          1 - attendanceDegreeOfMembership),
-      "Contract Continue Without Salary Increase": min<double>(
-          1 -
-              min(workPerformanceDegreeOfMembership,
-                  behaviorDegreeOfMembership),
-          attendanceDegreeOfMembership),
-      "Fired": min<double>(
-          1 -
-              min(workPerformanceDegreeOfMembership,
-                  behaviorDegreeOfMembership),
-          1 - attendanceDegreeOfMembership),
-    };
+    // Evaluate the rules and determine the degree of membership of the output variable
+    var promoteMembership = min(
+        min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
+        attendanceDegreeOfMembership);
+    var increaseSalaryMembership = min(
+        min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
+        1 - attendanceDegreeOfMembership);
+    var firedMembership = min(
+        1 - min(workPerformanceDegreeOfMembership, behaviorDegreeOfMembership),
+        attendanceDegreeOfMembership);
 
-    // Determine the highest degree of membership and the corresponding action
-    var highestMembership = actionMembership.values.reduce(max);
-    var highestActions = actionMembership.keys
-        .where((key) => actionMembership[key] == highestMembership);
-    pernyataan = highestActions.first;
+    // Define the output fuzzy sets
+    var promoteOutput = [0, 50, 100];
+    var increaseSalaryOutput = [0, 50, 100];
+    var firedOutput = [0, 50, 100];
 
-    systemLog("\nAction aa: $pernyataan");
+    // Calculate the centroid of each output fuzzy set
+    var promoteCentroid = 0.0;
+    var increaseSalaryCentroid = 0.0;
+    var firedCentroid = 0.0;
 
+    var promoteMembershipSum =
+        promoteMembership + increaseSalaryMembership + firedMembership;
+
+    if (promoteMembershipSum != 0) {
+      promoteCentroid = (promoteOutput[0] * promoteMembership +
+              promoteOutput[1] * promoteMembership +
+              promoteOutput[2] * promoteMembership) /
+          promoteMembershipSum;
+    } else {
+      promoteCentroid = promoteSet[1];
+    }
+
+    var increaseSalaryMembershipSum =
+        promoteMembership + increaseSalaryMembership + firedMembership;
+    if (increaseSalaryMembershipSum != 0) {
+      increaseSalaryCentroid =
+          (increaseSalaryOutput[0] * increaseSalaryMembership +
+                  increaseSalaryOutput[1] * increaseSalaryMembership +
+                  increaseSalaryOutput[2] * increaseSalaryMembership) /
+              increaseSalaryMembershipSum;
+    } else {
+      increaseSalaryCentroid = increaseSalarySet[1];
+    }
+    var firedMembershipSum =
+        promoteMembership + increaseSalaryMembership + firedMembership;
+    if (firedMembershipSum != 0) {
+      firedCentroid = (firedOutput[0] * firedMembership +
+              firedOutput[1] * firedMembership +
+              firedOutput[2] * firedMembership) /
+          firedMembershipSum;
+    } else {
+      firedCentroid = firedSet[1];
+    }
+
+    // Print the output
+    systemLog("workPerformanceValue: $workPerformanceExt");
+    systemLog("behaviorValue: $behaviorExt");
+    systemLog("attendanceValue: $attendanceExt");
+    // Print the output
+    systemLog("Promote: $promoteCentroid");
+    systemLog("Increase Salary: $increaseSalaryCentroid");
+    systemLog("Fired: $firedCentroid");
+
+    determineResult(minusChecker(promoteCentroid),
+        minusChecker(increaseSalaryCentroid), minusChecker(firedCentroid));
     chartData = [
-      FuzzyChartData(
-          'Promote',
-          min<double>(
-              min(workPerformanceDegreeOfMembership,
-                  behaviorDegreeOfMembership),
-              attendanceDegreeOfMembership)),
-      FuzzyChartData(
-          'Increase Salary',
-          min<double>(
-              min(workPerformanceDegreeOfMembership,
-                  behaviorDegreeOfMembership),
-              1 - attendanceDegreeOfMembership)),
-      FuzzyChartData(
-          'Continue',
-          min<double>(
-              1 -
-                  min(workPerformanceDegreeOfMembership,
-                      behaviorDegreeOfMembership),
-              attendanceDegreeOfMembership)),
-      FuzzyChartData(
-          'Fired',
-          min<double>(
-              1 -
-                  min(workPerformanceDegreeOfMembership,
-                      behaviorDegreeOfMembership),
-              1 - attendanceDegreeOfMembership)),
+      FuzzyChartData('Promote', minusChecker(promoteCentroid)),
+      FuzzyChartData('Increase Salary', minusChecker(increaseSalaryCentroid)),
+      FuzzyChartData('Fired', minusChecker(firedCentroid)),
     ];
     setState(() {});
+  }
+
+  determineResult(double valA, valB, valC) {
+    pernyataan = "Promote";
+
+    if (valB > valA) {
+      valA = valB;
+      pernyataan = "Increase Salary";
+    }
+
+    if (valC > valA) {
+      valA = valC;
+      pernyataan = "Fired";
+    }
+  }
+
+  double minusChecker(double value) {
+    if (value < 0) {
+      value = value * -1;
+    }
+    return value;
   }
 
   updateSection() {
