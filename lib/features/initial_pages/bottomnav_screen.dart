@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sample_project/bloc/crud/crud_bloc.dart';
-import 'package:sample_project/bloc/product/product_bloc.dart';
-import 'package:sample_project/pages/ecommerce_pages/ecommerce_screen.dart';
 import '../../helpers/themes.dart';
-import '../fuzzy_pages/fuzzy.dart';
-import '../crud_pages/hcreate_screen.dart';
-import '../crud_pages/hread_screen.dart';
-import '../crud_pages/hupdate_screen.dart';
+import '../ecommerce/screen/ecommerce_screen.dart';
+import '../reqres/screen/hupdate_screen.dart';
+import '../reqres/screen/reqres_screen.dart';
+import '../ecommerce/bloc/product_bloc.dart';
+import '../fuzzy/fuzzy_screen.dart';
+import '../reqres/bloc/crud_bloc.dart';
+import '../reqres/screen/hcreate_screen.dart';
+import '../reqres/screen/hread_screen.dart';
 
 class BottomNavScreen extends StatefulWidget {
   const BottomNavScreen({Key? key}) : super(key: key);
@@ -28,28 +29,17 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     switch (currentIndex) {
       case 0:
         return BlocProvider(
-          create: (context) => CrudBloc(),
-          child: const ReadScreen(),
-        );
+            create: (context) => CrudBloc(), child: const ReqresScreen());
+
       case 1:
-        return BlocProvider(
-          create: (context) => CrudBloc(),
-          child: const CreateScreen(),
-        );
-      case 2:
-        return BlocProvider(
-          create: (context) => CrudBloc(),
-          child: const UpdateScreen(),
-        );
-      case 3:
         return BlocProvider(
           create: (context) => ProductBloc()..add(LoadProductEvent()),
           child: const EcommercePage(),
         );
-      case 4:
+      case 2:
         return const FuzzyScreen();
       default:
-        return const ReadScreen();
+        return const ReqresScreen();
     }
   }
 
@@ -69,21 +59,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               margin: const EdgeInsets.only(top: 8, bottom: 4),
               child: const Icon(Icons.home),
             ),
-            label: 'Read',
-          ),
-          BottomNavigationBarItem(
-            icon: Container(
-              margin: const EdgeInsets.only(top: 8, bottom: 4),
-              child: const Icon(Icons.add),
-            ),
-            label: 'Create',
-          ),
-          BottomNavigationBarItem(
-            icon: Container(
-              margin: const EdgeInsets.only(top: 8, bottom: 4),
-              child: const Icon(Icons.update),
-            ),
-            label: 'Update',
+            label: 'Reqres API',
           ),
           BottomNavigationBarItem(
             icon: Container(

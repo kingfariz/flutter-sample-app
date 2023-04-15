@@ -34,3 +34,6 @@ TextStyle productPrice = const TextStyle(
     color: primaryTextColor, fontSize: 13, fontWeight: FontWeight.bold);
 
 TextStyle productSale = const TextStyle(color: softGreyColor, fontSize: 11);
+
+TextStyle buttonTextStyle = const TextStyle(
+    color: primaryColor, fontSize: 18, fontWeight: FontWeight.w600);

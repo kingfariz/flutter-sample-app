@@ -3,10 +3,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide ProgressIndicator;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../bloc/crud/crud_bloc.dart';
-import '../../models/user_model.dart';
-import '../../helpers/widgets/form_text_global.dart';
-import '../../helpers/themes.dart';
+
+import '../../../helpers/themes.dart';
+import '../../../helpers/widgets/form_text_global.dart';
+import '../../../models/user_model.dart';
+import '../bloc/crud_bloc.dart';
 
 class UpdateScreen extends StatefulWidget {
   const UpdateScreen({super.key});

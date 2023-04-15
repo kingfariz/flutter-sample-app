@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:sample_project/bloc/crud/crud_bloc.dart';
-import '../../helpers/functions/system_log.dart';
-import '../../helpers/themes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../helpers/functions/system_log.dart';
+import '../../../helpers/themes.dart';
+import '../bloc/crud_bloc.dart';
 
 class ReadScreen extends StatefulWidget {
   const ReadScreen({Key? key}) : super(key: key);

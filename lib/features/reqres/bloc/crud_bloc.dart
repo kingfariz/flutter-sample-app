@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:sample_project/helpers/functions/system_log.dart';
-import '../../services/dio_setting.dart';
+import '../../../services/dio_setting.dart';
 part 'crud_event.dart';
 part 'crud_state.dart';
 
