@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:sample_project/helpers/functions/system_log.dart';
-import 'package:sample_project/models/product_model.dart';
+import 'package:sample_project/features/ecommerce/models/product_model.dart';
 part 'product_event.dart';
 part 'product_state.dart';
 

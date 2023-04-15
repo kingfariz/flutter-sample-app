@@ -6,7 +6,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../helpers/themes.dart';
 import '../../../helpers/widgets/form_text_global.dart';
-import '../../../models/user_model.dart';
+import '../models/user_model.dart';
 import '../bloc/crud_bloc.dart';
 
 class UpdateScreen extends StatefulWidget {
