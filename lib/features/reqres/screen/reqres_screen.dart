@@ -6,7 +6,7 @@ import 'package:sample_project/features/reqres/screen/hupdate_screen.dart';
 
 import '../../../helpers/themes.dart';
 import '../bloc/crud_bloc.dart';
-import '../page_indicator.dart';
+import '../widgets/page_indicator.dart';
 
 class ReqresScreen extends StatefulWidget {
   const ReqresScreen({super.key});
